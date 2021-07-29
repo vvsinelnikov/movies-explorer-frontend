@@ -1,0 +1,143 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 74px;
+  padding: 18px 14px;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  max-width: 1600px;
+}
+
+.header__logo {
+  min-width: 38px;
+  height: 38px;
+  background-image: url('../../images/Header/header__logo.png');
+  background-size: cover;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.header__top-menu {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__menu-list {
+  list-style: none;
+  display: flex;
+  padding: 0;
+}
+
+.header__menu-item-authorized {
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.header__menu-item-profile {
+  margin-left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header__menu-item-account {
+  margin-left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: none;
+  position: relative;
+  right: -44px;
+}
+
+.header__menu-text {
+  color: #fff;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 12px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity .25s;
+  color: #000;
+}
+
+.header__menu-text_active {
+  font-weight: 500;
+}
+
+.header__menu-text:hover {
+  opacity: 0.7;
+}
+
+.header__button_login {
+  width: 76px;
+  height: 32px;
+  border-radius: 3px;
+  background-color:#2be080;
+}
+
+.header__button_profile {
+  box-sizing: border-box;
+  padding: 0 4px 0 15px;
+  height: 32px;
+  background-color: #fff;
+  box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.08);
+  border-radius: 40px;
+  color: #000;
+  font-weight: 500;
+}
+
+.header__profile-icon {
+  width: 26px;
+  height: 26px;
+  margin-left: 7px;
+  background: url('../../images/Header/header__profile-icon.png') center no-repeat;
+  background-size: 12px 12px;
+  border-radius: 50px;
+  background-color: #f9f9f9;
+}
+
+.header__burger-menu {
+  width: 44px;
+  height: 44px;
+  background: url('../../images/Header/burger.png') center no-repeat;
+  background-size: 44px 44px;
+  cursor: pointer;
+  transition: opacity .25s;
+}
+
+.header__burger-menu:hover {
+  opacity: 0.5;
+}
+
+@media screen and (min-width: 768px) {
+  .header {
+    padding: 18px 30px;
+  }
+  .header__logo {
+    margin-right: 44px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .header {
+    padding: 18px 70px;
+  }
+  .header__menu-item-account {
+    display: initial;
+  }
+  .header__burger-menu {
+    display: none;
+  }
+}

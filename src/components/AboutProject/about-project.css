@@ -1,0 +1,136 @@
+.about-project {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 70px 14px;
+  font-style: normal;
+  font-weight: normal;
+  color: #000;
+}
+
+.about-project__title {
+  font-weight: normal;
+  margin: 0;
+  padding-bottom: 23px;
+  font-size: 22px;
+  line-height: 27px;
+  letter-spacing: -0.04em;
+  border-bottom:#000 1px solid;
+}
+
+.about-project__table {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0;
+}
+
+.about-project__subtitle {
+  font-weight: normal;
+  margin: 60px 0 16px 0;
+  font-size: 18px;
+  line-height: 22px;
+  letter-spacing: -0.04em;
+}
+
+.about-project__text {
+  margin: 0;
+  font-size: 11px;
+  line-height: 16px;
+
+}
+
+.about-project__progress {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  gap: 14px 0;
+  font-size: 11px;
+  line-height: 13px;
+  color: #000;
+}
+
+.about-project__progress_week-one {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  background-color: #2be080;
+  height: 36px;
+  text-align: center;
+}
+
+.about-project__progress_week-four {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  background-color: #f2f2f2;
+  height: 36px;
+  text-align: center;
+}
+
+.about-project__progress_subline {
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 13px;
+  text-align: center;
+  color: #a0a0a0;
+}
+
+.about-project__subline {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  background-color: #f2f2f2;
+  height: 36px;
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  .about-project {
+    padding: 90px 30px;
+  }
+  .about-project__table {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+  .about-project__subtitle {
+    margin: 70px 0 22px 0;
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .about-project__text {
+    margin: 0;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .about-project__progress {
+    margin-top: 93px;
+    font-size: 14px;
+    line-height: 17px;
+  }
+  .about-project__progress_subline {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .about-project {
+    padding: 110px 70px;
+  }
+  .about-project__subtitle {
+    margin: 70px 0 26px 0;
+  }
+  .about-project__text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .about-project__progress {
+    margin-top: 110px;
+  }
+}
