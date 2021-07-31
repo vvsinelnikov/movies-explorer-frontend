@@ -4,3 +4,4 @@ https://bitfilms.nomoredomains.monster/
 
 Доделать
 * Сделать favicon и иконки для PWA
+* Сделать валидацию форм, в том числе поиска фильмов

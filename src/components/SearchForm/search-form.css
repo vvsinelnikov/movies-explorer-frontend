@@ -26,6 +26,10 @@
   color: #a0a0a0;
 }
 
+.search-form__form:focus-within {
+  border-bottom: 1px solid #3456F3;
+}
+
 .search-form__input::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }

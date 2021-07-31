@@ -59,6 +59,10 @@
   background-color: #f9f9f9;
 }
 
+.login__input:focus {
+  background-color: #f1f1f1;
+}
+
 .login__error {
   font-size: 10px;
   line-height: 12px;
