@@ -1,0 +1,40 @@
+@import url('./vendor/normalize.css');
+@import url('./vendor/fonts/inter/inter.css');
+@import url('./components/Header/header.css');
+@import url('./components/Promo/promo.css');
+@import url('./components/Footer/footer.css');
+@import url('./components/AboutProject/about-project.css');
+@import url('./components/Techs/techs.css');
+@import url('./components/AboutMe/about-me.css');
+@import url('./components/Portfolio/portfolio.css');
+@import url('./components/Navigation/navigation.css');
+@import url('./components/PageNotFound/page-not-found.css');
+@import url('./components/SearchForm/search-form.css');
+@import url('./components/FilterCheckbox/filter-checkbox.css');
+@import url('./components/MoviesCardList/movies-card-list.css');
+@import url('./components/Preloader/preloader.css');
+@import url('./components/MoviesCard/movies-card.css');
+@import url('./components/Login/login.css');
+@import url('./components/Profile/profile.css');
+
+.page {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 320px;
+  max-width: 1600px;
+  font-family: 'Inter', 'Arial', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+}
+
+.main {
+  width: 100%;
+  flex-grow: 1;
+}

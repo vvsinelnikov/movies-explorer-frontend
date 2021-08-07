@@ -1,0 +1,64 @@
+.login__title_profile {
+  display: flex;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  color: #000;
+  margin-top: 144px;
+  margin-bottom: 80px;
+}
+
+.profile__text {
+  margin-top: 16px;
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  color: #000;
+  transition: opacity .25s;
+}
+
+.profile__text:hover {
+  opacity: 0.7;
+}
+
+.profile__text_red {
+  color: #ff3055;
+}
+
+.profile__line {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.profile__line_last {
+  border: none;
+}
+
+.profile__subheading {
+  margin: 0;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 13px;
+  color: #000;
+  margin: 16px 0 16px 0;
+}
+
+.profile__subheading_value {
+  font-weight: normal;
+  text-align: right;
+}
+
+@media screen and (min-width: 768px) {
+  .login__title_profile {
+    align-self: flex-start;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+
+}

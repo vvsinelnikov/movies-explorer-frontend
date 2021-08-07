@@ -1,0 +1,110 @@
+.navigation {
+  /* visibility: hidden; */
+  position: fixed;
+  z-index: 3;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 520px;
+  height: 100vh;
+  background-color: #fff;
+}
+
+.navigation__burger-menu {
+  align-self: flex-end;
+  margin: 15px 15px 0 0;
+  width: 44px;
+  height: 44px;
+  background: url('../../images/Navigation/cross.png') center no-repeat;
+  background-size: 44px 44px;
+  cursor: pointer;
+  transition: opacity .25s;
+}
+
+.navigation__burger-menu:hover {
+  opacity: 0.7;
+}
+
+.navigation__main-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.navigation__text {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+  margin-bottom: 24px;
+  text-align: center;
+  color: #000;
+  text-decoration: none;
+  transition: opacity .25s;
+}
+
+.navigation__text:hover {
+  opacity: 0.7;
+}
+
+.navigation__text_active {
+  text-decoration: underline;
+}
+
+.navigation__account-menu {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  bottom: 46px;
+}
+
+.navigation__button_profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 4px 0 15px;
+  height: 32px;
+  background-color: #fff;
+  box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.08);
+  border-radius: 40px;
+  color: #000;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 12px;
+  text-decoration: none;
+  transition: opacity .25s;
+}
+
+.navigation__button_profile:hover {
+  opacity: 0.7;
+}
+
+.navigation__profile-icon {
+  width: 26px;
+  height: 26px;
+  margin-left: 7px;
+  background: url('../../images/Header/header__profile-icon.png') center no-repeat;
+  background-size: 12px 12px;
+  border-radius: 50px;
+  background-color: #f9f9f9;
+}
+
+@media screen and (min-width: 768px) {
+  .navigation {
+    padding: 0 15px;
+  }
+  .navigation__menu-item-account {
+    bottom: 90px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .navigation {
+    visibility: hidden;
+  }
+}
