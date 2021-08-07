@@ -1,5 +1,6 @@
 .movies-card__card {
   list-style: none;
+  overflow: hidden;
 }
 
 .movies-card__cover {

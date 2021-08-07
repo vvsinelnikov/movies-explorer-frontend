@@ -1,6 +1,7 @@
 import React from 'react';
+import moviesApi from '../../utils/MoviesApi';
 
-function MoviesCard({card, page}) {
+function MoviesCard({movie, page}) {
 
   function getTimeFromMins(mins) {
     const hours = Math.trunc(mins/60);
@@ -11,10 +12,10 @@ function MoviesCard({card, page}) {
   return (
     <li className='movies-card__card'>
       <figure className='movies-card__cover'>
-        <img className='movies-card__image' src={card.url} alt={card.title} />
-        <div className='movies-card__block'><figcaption className='movies-card__caption'>{card.title}</figcaption><input type='button' className={page === 'Movies' ? 'movies-card__button_like' : 'movies-card__button_remove' }/></div>
+        <a href={movie.trailerLink} target='_blank' rel='noreferrer'><img className='movies-card__image' src={moviesApi.serverUrl + movie.image.url} alt={movie.nameRU} /></a>
+        <div className='movies-card__block'><figcaption className='movies-card__caption'>{movie.nameRU}</figcaption><input type='button' className={page === 'Movies' ? 'movies-card__button_like' : 'movies-card__button_remove' }/></div>
       </figure>
-      <p className='movies-card__duration'>{getTimeFromMins(card.duration)}</p>
+      <p className='movies-card__duration'>{getTimeFromMins(movie.duration)}</p>
     </li>
   );
 }

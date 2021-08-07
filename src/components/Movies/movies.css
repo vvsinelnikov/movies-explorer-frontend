@@ -1,0 +1,48 @@
+.movies__no-results {
+  margin-top: auto 50px auto 50px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  width: 70%;
+  align-self: center;
+}
+
+.movies__loader {
+  padding: 50px 14px 80px 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.movies__loader-button {
+  border: none;
+  width: 240px;
+  height: 36px;
+  color: #000;
+  background: #f9f9f9;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  cursor: pointer;
+  transition: opacity .25s;
+}
+
+.movies__loader-button:hover {
+  opacity: 0.7;
+}
+
+@media screen and (min-width: 768px) {
+  .movies__loader {
+    padding: 50px 30px 80px 30px;
+  }
+  .movies__loader-button {
+    width: 320px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .movies__loader {
+    padding: 50px 70px 80px 70px;
+  }
+}

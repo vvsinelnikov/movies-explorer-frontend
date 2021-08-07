@@ -18,8 +18,8 @@ function App() {
     name: 'Владимир',
     email: 'pochta@yandex.ru'
   };
-  const isLoggedIn = true;
-  // const isLoggedIn = false;
+  // const isLoggedIn = true;
+  const isLoggedIn = false;
 
   // eslint-disable-next-line no-unused-vars
   const history = useHistory();
