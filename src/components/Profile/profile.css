@@ -17,6 +17,7 @@
   text-align: center;
   color: #000;
   transition: opacity .25s;
+  cursor: pointer;
 }
 
 .profile__text:hover {
@@ -25,6 +26,7 @@
 
 .profile__text_red {
   color: #ff3055;
+  cursor: pointer;
 }
 
 .profile__line {

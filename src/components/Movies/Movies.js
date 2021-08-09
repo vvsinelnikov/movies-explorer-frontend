@@ -7,8 +7,13 @@ import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
 import moviesApi from '../../utils/MoviesApi';
 import { shortieDuration } from '../../utils/constants';
+import NavigationContext from '../../contexts/NavigationContext';
 
-function Movies(props) {
+function Movies() {
+  const { navShown, setNavShown } = React.useContext(NavigationContext);
+  React.useEffect(() => {
+    setNavShown(false)
+  }, []);
 
   const [showPreloader, setShowPreloader] = React.useState(false); // прелоадер
   const [movies, setMovies] = React.useState([]); // фильмы
@@ -111,12 +116,9 @@ function Movies(props) {
 
   return (
     <>
-      <Header toggleNav={props.toggleNav} isLoggedIn={props.isLoggedIn} />
-
+      <Header />
       <div className='main'>
-
-        { props.navShown ? ( <Navigation isLoggedIn={props.isLoggedIn} toggleNav={props.toggleNav}/> ) : ( <></> ) }
-
+        { navShown ? ( <Navigation /> ) : ( <></> ) }
         <SearchForm
           handleSearch={handleSearch}
           handleSearchChange={handleSearchChange}

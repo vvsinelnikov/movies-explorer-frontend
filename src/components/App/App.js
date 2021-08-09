@@ -8,53 +8,80 @@ import Profile from '../Profile/Profile';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Movies from '../Movies/Movies';
 import PageNotFound from '../PageNotFound/PageNotFound';
+import CurrentUserContext from '../../contexts/CurrentUserContext';
+import NavigationContext from '../../contexts/NavigationContext';
+import api from '../../utils/MainApi';
 
 function App() {
+  const history = useHistory();
+
   React.useEffect(() => {
     document.title = "Bitfilms"
   }, []);
 
-  const user = {
-    name: 'Владимир',
-    email: 'pochta@yandex.ru'
-  };
-  // const isLoggedIn = true;
-  const isLoggedIn = false;
+  const [currentUser, setСurrentUser] = React.useState({'isLoggedIn': false});
+  React.useEffect(() => {
+    setСurrentUser({
+      'isLoggedIn': false,
+      '_id': 'TestId',
+      'name': 'TestName',
+      'email': 'TestEmail'
+    })
+  }, []);
 
-  // eslint-disable-next-line no-unused-vars
-  const history = useHistory();
+  const [navShown, setNavShown] = React.useState(false); // Отображение бокового меню
 
-  const [navShown, setNavShown] = React.useState();
+  React.useEffect(() => {
+    api.validateLogin()
+      .then(res => {
+        setСurrentUser({
+          'isLoggedIn': true,
+          '_id': res._id,
+          'name': res.name,
+          'email': res.email
+        })
+        history.push('/movies');
+      })
+      // .catch(err => console.log(err.message || err.status + ' ' + err.statusText));
+      .catch(err => console.log(err));
 
-  function toggleNav() {
-    navShown ? setNavShown(false) : setNavShown(true)
-  }
+  }, []);
 
   return (
     <div className='page'>
-      <Switch>
-        <Route path='/' exact>
-          <Redirect to="/movies" />
-        </Route>
-        <Route path='/main'>
-          <Main toggleNav={toggleNav} navShown={navShown} isLoggedIn={isLoggedIn} />
-        </Route>
-        <Route path='/signup'>
-          <Register />
-        </Route>
-        <Route path='/signin'>
-          <Login />
-        </Route>
-        <ProtectedRoute path='/profile' component={Profile} isLoggedIn={isLoggedIn} toggleNav={toggleNav} navShown={navShown} user={user}  />
-        <ProtectedRoute path='/saved-movies' component={SavedMovies} isLoggedIn={isLoggedIn} toggleNav={toggleNav} navShown={navShown} />
-        <ProtectedRoute path='/movies' component={Movies} isLoggedIn={isLoggedIn} toggleNav={toggleNav} navShown={navShown} />
-        <Route path='/404'>
-          <PageNotFound />
-        </Route>
-        <Route path="*">
-          <Redirect to="/404" />
-        </Route>
-      </Switch>
+      <CurrentUserContext.Provider value={currentUser}>
+        <NavigationContext.Provider value={{navShown, setNavShown}}>
+          <Switch>
+            <Route path='/' exact>
+              <Redirect to="/movies" />
+            </Route>
+            <Route path='/main'>
+              <Main />
+            </Route>
+            <Route path='/signup'>
+              {currentUser.isLoggedIn ?
+                (<Redirect to="/movies" />) :
+                (<Register setСurrentUser={setСurrentUser} />)
+              }
+            </Route>
+            <Route path='/signin'>
+              {currentUser.isLoggedIn ?
+                (<Redirect to="/movies" />) :
+                (<Login setСurrentUser={setСurrentUser} />)
+              }
+            </Route>
+            <ProtectedRoute path='/profile' component={Profile} />
+            <ProtectedRoute path='/saved-movies' component={SavedMovies} />
+            <ProtectedRoute path='/movies' component={Movies} />
+            <Route path='/404'>
+              <PageNotFound />
+            </Route>
+            <Route path="*">
+              <Redirect to="/404" />
+            </Route>
+          </Switch>
+        </NavigationContext.Provider>
+      </CurrentUserContext.Provider>
     </div>
   );
 }
