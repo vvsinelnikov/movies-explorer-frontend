@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import api from '../../utils/MainApi';
 import formValidaton from '../FormValidation/FormValidation';
 
 function Login(props) {
-  const history = useHistory();
+  // const history = useHistory();
   const { values, handleInputChange, errors, isValid, validationOn, setValidationOn, resetForm } = formValidaton();
   const [loginError, setLoginError] = React.useState(''); // ошибка ответа API
 
@@ -21,8 +22,8 @@ function Login(props) {
             'name': res.name,
             'email': res.email
           });
-          resetForm();
-          history.push('/movies')
+          // resetForm();
+          // history.push('/movies')
         })
         .catch(err => {
           setLoginError(err.message || err.status + ' ' + err.statusText)

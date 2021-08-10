@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
@@ -20,27 +21,31 @@ function App() {
   }, []);
 
   const [currentUser, setСurrentUser] = React.useState({'isLoggedIn': false});
-  React.useEffect(() => {
-    setСurrentUser({
-      'isLoggedIn': false,
-      '_id': 'TestId',
-      'name': 'TestName',
-      'email': 'TestEmail'
-    })
-  }, []);
+  // React.useEffect(() => {
+  //   setСurrentUser({
+  //     'isLoggedIn': false,
+  //     '_id': 'TestId',
+  //     'name': 'TestName',
+  //     'email': 'TestEmail'
+  //   })
+  // }, []);
 
   const [navShown, setNavShown] = React.useState(false); // Отображение бокового меню
 
   React.useEffect(() => {
     api.validateLogin()
       .then(res => {
-        setСurrentUser({
-          'isLoggedIn': true,
-          '_id': res._id,
-          'name': res.name,
-          'email': res.email
-        })
-        history.push('/movies');
+        if (res.user) {
+          console.log('if :' + res)
+          setСurrentUser({
+            'isLoggedIn': true,
+            '_id': res._id,
+            'name': res.name,
+            'email': res.email
+          })
+          history.push('/movies');
+        }
+        else {console.log(res)}
       })
       // .catch(err => console.log(err.message || err.status + ' ' + err.statusText));
       .catch(err => console.log(err));

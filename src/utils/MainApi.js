@@ -6,11 +6,23 @@ class Api {
     this._headers = apiSettings.headers
   }
 
+  // validateLogin() {
+  //   return fetch(`${this._baseUrl}/users/me`, {
+  //     method: 'GET',
+  //     headers: this._headers,
+  //     credentials: 'include',
+  //     // withCredentials: true,
+  //   })
+  //     .then(res => { return returnResult(res) })
+  // }
+
   validateLogin() {
-    return fetch(`${this._baseUrl}/users/me`, {
+    console.log('attempting login')
+    return fetch(`${this._baseUrl}/auth`, {
       method: 'GET',
       headers: this._headers,
       credentials: 'include',
+      withCredentials: true,
     })
       .then(res => { return returnResult(res) })
   }
@@ -29,7 +41,7 @@ class Api {
   }
 
   signin(email, password) {
-    return fetch(`${this._baseUrl}/signout`, {
+    return fetch(`${this._baseUrl}/signin`, {
       method: 'POST',
       headers: this._headers,
       body: JSON.stringify({
@@ -101,8 +113,8 @@ class Api {
 }
 
 const apiSettings = {
-  // baseUrl: 'http://localhost:3000',
-  baseUrl: 'https://api.bitfilms.nomoredomains.monster',
+  baseUrl: 'http://localhost:3000',
+  // baseUrl: 'https://api.bitfilms.nomoredomains.monster',
   headers: {
       'Content-Type': 'application/json',
   },
