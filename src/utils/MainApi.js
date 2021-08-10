@@ -16,6 +16,7 @@ class Api {
   //     .then(res => { return returnResult(res) })
   // }
 
+
   validateLogin() {
     console.log('attempting login')
     return fetch(`${this._baseUrl}/auth`, {
