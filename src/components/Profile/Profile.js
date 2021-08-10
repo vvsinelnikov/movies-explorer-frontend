@@ -62,7 +62,7 @@ function Login(props) {
       <div className='main'>
       { navShown ? ( <Navigation /> ) : ( <></> ) }
       { editProfile ? (
-        <form className='login' onSubmit={handleSaveProfile} noValidate >
+        <form className='login' onSubmit={() => handleSaveProfile} noValidate >
           <div className='login__authorize'>
           <h1 className='login__title_profile'>Обновление профиля</h1>
             <label className='login__label'>Имя<input name='name' onChange={handleInputChange} pattern='[a-zA-Zа-яёА-ЯЁ0-9\s-]*' type='text' className='login__input' minLength='2' maxLength='30' required /></label>
@@ -89,7 +89,7 @@ function Login(props) {
           </div>
           <div className='login__register'>
             <p onClick={() => handleEditProfile(true)} className='profile__text'>Редактировать</p>
-            <p onClick={handleSignOut} className='profile__text profile__text_red'>Выйти из аккаунта</p>
+            <p onClick={() => handleSignOut} className='profile__text profile__text_red'>Выйти из аккаунта</p>
           </div>
         </section>
       )}
