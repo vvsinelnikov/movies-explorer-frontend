@@ -53,11 +53,11 @@ class Api {
   }
 
   signout() {
-    return fetch(`${this._baseUrl}/signout`, {
-      method: 'POST',
-      headers: this._headers,
-    })
-      .then(res => { return returnResult(res) })
+    // return fetch(`${this._baseUrl}/signout`, {
+    //   method: 'POST',
+    //   headers: this._headers,
+    // })
+    //   .then(res => { return returnResult(res) })
   }
 
   editProfile(name, email) {
