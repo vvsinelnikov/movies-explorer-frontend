@@ -22,8 +22,8 @@ function Login(props) {
             'name': res.name,
             'email': res.email
           });
-          // resetForm();
-          // history.push('/movies')
+          resetForm();
+          history.push('/movies')
         })
         .catch(err => {
           console.log(err);
