@@ -18,10 +18,10 @@ function Login(props) {
   function handleSignOut() {
     api.signout()
       .then(res => {
-      console.log('signed out: ' + res);
-      props.setСurrentUser({
-        'isLoggedIn': false,
-      });
+        console.log(res);
+        props.setСurrentUser({
+          'isLoggedIn': false,
+        });
       history.push('/main')
     })
     .catch(err => console.log(err))

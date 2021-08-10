@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import api from '../../utils/MainApi';
@@ -21,8 +22,8 @@ function Login(props) {
             'name': res.name,
             'email': res.email
           });
-          resetForm();
-          history.push('/movies')
+          // resetForm();
+          // history.push('/movies')
         })
         .catch(err => {
           console.log(err);

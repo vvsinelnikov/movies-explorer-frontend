@@ -5,7 +5,7 @@ import api from '../../utils/MainApi';
 import formValidaton from '../FormValidation/FormValidation';
 
 function Login(props) {
-  // const history = useHistory();
+  const history = useHistory();
   const { values, handleInputChange, errors, isValid, validationOn, setValidationOn, resetForm } = formValidaton();
   const [loginError, setLoginError] = React.useState(''); // ошибка ответа API
 
@@ -26,6 +26,7 @@ function Login(props) {
           // history.push('/movies')
         })
         .catch(err => {
+          console.log(err);
           setLoginError(err.message || err.status + ' ' + err.statusText)
         })
     }

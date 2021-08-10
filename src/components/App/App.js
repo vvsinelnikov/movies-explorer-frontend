@@ -36,13 +36,13 @@ function App() {
     api.validateLogin()
       .then(res => {
         if (res.user) {
-          console.log('if :' + res)
           setСurrentUser({
             'isLoggedIn': true,
-            '_id': res._id,
-            'name': res.name,
-            'email': res.email
+            '_id': res.user._id,
+            'name': res.user.name,
+            'email': res.user.email
           })
+          console.log(res.user)
           history.push('/movies');
         }
         else {console.log(res)}

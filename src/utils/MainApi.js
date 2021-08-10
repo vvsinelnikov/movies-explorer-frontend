@@ -6,24 +6,11 @@ class Api {
     this._headers = apiSettings.headers
   }
 
-  // validateLogin() {
-  //   return fetch(`${this._baseUrl}/users/me`, {
-  //     method: 'GET',
-  //     headers: this._headers,
-  //     credentials: 'include',
-  //     // withCredentials: true,
-  //   })
-  //     .then(res => { return returnResult(res) })
-  // }
-
-
   validateLogin() {
-    console.log('attempting login')
     return fetch(`${this._baseUrl}/checkauth`, {
-      method: 'GET',
+      method: 'POST',
       headers: this._headers,
       credentials: 'include',
-      withCredentials: true,
     })
       .then(res => { return returnResult(res) })
   }
@@ -55,6 +42,7 @@ class Api {
 
   signout() {
     // return fetch(`${this._baseUrl}/signout`, {
+    //   credentials: 'include',
     //   method: 'POST',
     //   headers: this._headers,
     // })
