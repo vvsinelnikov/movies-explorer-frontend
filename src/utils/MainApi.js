@@ -114,8 +114,8 @@ class Api {
 }
 
 const apiSettings = {
-  baseUrl: 'http://localhost:3000',
-  // baseUrl: 'https://api.bitfilms.nomoredomains.monster',
+  // baseUrl: 'http://localhost:3000',
+  baseUrl: 'https://api.bitfilms.nomoredomains.monster',
   headers: {
       'Content-Type': 'application/json',
   },
