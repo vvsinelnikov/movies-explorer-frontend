@@ -35,14 +35,14 @@ function App() {
   React.useEffect(() => {
     api.validateLogin()
       .then(res => {
-        if (res.user) {
+        if (res._id) {
           setСurrentUser({
             'isLoggedIn': true,
-            '_id': res.user._id,
-            'name': res.user.name,
-            'email': res.user.email
+            '_id': res._id,
+            'name': res.name,
+            'email': res.email
           })
-          console.log(res.user)
+          console.log(res)
           history.push('/movies');
         }
         else {console.log(res)}

@@ -34,7 +34,7 @@ function Login(props) {
 
   return (
     <div className='main'>
-      <form className='login' onSubmit={handleRegister} noValidate >
+      <form className='login' onSubmit={() => handleRegister} noValidate >
         <div className='login__authorize'>
           <NavLink to='/' className='login__logo' />
           <h1 className='login__title'>Добро пожаловать!</h1>
