@@ -19,7 +19,7 @@ class Api {
 
   validateLogin() {
     console.log('attempting login')
-    return fetch(`${this._baseUrl}/auth`, {
+    return fetch(`${this._baseUrl}/checkauth`, {
       method: 'GET',
       headers: this._headers,
       credentials: 'include',
