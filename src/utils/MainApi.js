@@ -7,7 +7,7 @@ class Api {
   }
 
   validateLogin() {
-    return fetch(`${this._baseUrl}/checkauth`, {
+    return fetch(`${this._baseUrl}/auth`, {
       method: 'POST',
       headers: this._headers,
       credentials: 'include',
