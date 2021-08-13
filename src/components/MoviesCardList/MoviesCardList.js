@@ -7,7 +7,7 @@ function MoviesCardList(props) {
     <>
       <ul className='movies-cards-list'>
         {props.filteredMovies().map((movie) => {
-          return <MoviesCard page={props.page} movie={movie} key={movie.id} /> })}
+          return <MoviesCard likeMovie={props.likeMovie} page={props.page} movie={movie} key={movie.id} /> })}
       </ul>
     </>
   );

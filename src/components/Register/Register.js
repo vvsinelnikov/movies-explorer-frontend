@@ -15,15 +15,17 @@ function Login(props) {
     setRegistrationError('');
     if (isValid) {
       api.signup(values.name, values.email, values.password)
-        .then(res => {
-          props.setСurrentUser({
-            'isLoggedIn': true,
-            '_id': res._id,
-            'name': res.name,
-            'email': res.email
-          });
-          resetForm();
-          history.push('/movies')
+        .then((data) => {
+          if (data.jwt) {
+              props.setСurrentUser({
+                'isLoggedIn': true,
+                '_id': data._id,
+                'name': data.name,
+                'email': data.email
+              });
+              resetForm();
+              history.push('/movies');
+          }
         })
         .catch(err => {
           console.log(err);
@@ -34,7 +36,7 @@ function Login(props) {
 
   return (
     <div className='main'>
-      <form className='login' onSubmit={() => handleRegister} noValidate >
+      <form className='login' onSubmit={handleRegister} noValidate >
         <div className='login__authorize'>
           <NavLink to='/' className='login__logo' />
           <h1 className='login__title'>Добро пожаловать!</h1>

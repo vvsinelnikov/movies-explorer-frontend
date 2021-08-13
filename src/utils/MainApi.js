@@ -3,57 +3,65 @@ import {returnResult} from './returnResult';
 class Api {
   constructor(apiSettings) {
     this._baseUrl = apiSettings.baseUrl;
-    this._headers = apiSettings.headers
   }
 
-  validateLogin() {
-    return fetch(`${this._baseUrl}/auth`, {
-      method: 'POST',
-      headers: this._headers,
-      credentials: 'include',
+  getMyProfile (jwt) {
+    return fetch(`${this._baseUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`,
+      }
     })
-      .then(res => { return returnResult(res) })
+    .then(res => res.json())
+    .then(data => data)
   }
 
   signup(name, email, password) {
     return fetch(`${this._baseUrl}/signup`, {
       method: 'POST',
-      headers: this._headers,
-      body: JSON.stringify({
-        'name': name,
-        'email': email,
-        'password': password
-      })
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password })
     })
       .then(res => { return returnResult(res) })
+      .then((data) => {
+        if (data.jwt){
+          localStorage.setItem('jwt', data.jwt);
+          return data;
+        }
+      })
   }
 
   signin(email, password) {
     return fetch(`${this._baseUrl}/signin`, {
       method: 'POST',
-      headers: this._headers,
-      body: JSON.stringify({
-        'email': email,
-        'password': password
-      })
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password })
     })
       .then(res => { return returnResult(res) })
+      .then((data) => {
+        if (data.jwt){
+          localStorage.setItem('jwt', data.jwt);
+          return data;
+        }
+      })
   }
 
-  signout() {
-    // return fetch(`${this._baseUrl}/signout`, {
-    //   credentials: 'include',
-    //   method: 'POST',
-    //   headers: this._headers,
-    // })
-    //   .then(res => { return returnResult(res) })
-  }
-
-  editProfile(name, email) {
+  editProfile(name, email, jwt) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
-      credentials: 'include',
-      headers: this._headers,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`,
+      },
       body: JSON.stringify({
         'name': name,
         'email': email
@@ -62,40 +70,39 @@ class Api {
       .then(res => { return returnResult(res) })
   }
 
-  getMovies() {
+  getLikedMovies(jwt) {
     return fetch(`${this._baseUrl}/movies`, {
       method: 'GET',
-      credentials: 'include',
-      headers: this._headers
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`,
+      },
   })
     .then(res => { return returnResult(res) })
   }
 
-  likeMovie({country, director, duration, year, description, image, trailer, nameRU, nameEN, thumbnail, id}) {
+  likeMovie(jwt, movie) {
     return fetch(`${this._baseUrl}/movies/`, {
       method: 'POST',
-      headers: this._headers,
-      body: JSON.stringify({
-        'country': country,
-        'director': director,
-        'duration': duration,
-        'year': year,
-        'description': description,
-        'image': image,
-        'trailer': trailer,
-        'nameRU': nameRU,
-        'nameEN': nameEN,
-        'thumbnail': thumbnail,
-        'movieId': id
-      })
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`,
+      },
+      body: JSON.stringify(movie)
     })
       .then(res => { return returnResult(res) })
   }
 
-  dislikeMovie(movie) {
+  dislikeMovie(jwt, movie) {
     return fetch(`${this._baseUrl}/movies/${movie.id}`, {
       method: 'DELETE',
-      headers: this._headers
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwt}`,
+      },
     })
       .then(res => { return returnResult(res) })
   }
@@ -104,9 +111,6 @@ class Api {
 const apiSettings = {
   // baseUrl: 'http://localhost:3000',
   baseUrl: 'https://api.bitfilms.nomoredomains.monster',
-  headers: {
-      'Content-Type': 'application/json',
-  },
 };
 
 const api = new Api(apiSettings);

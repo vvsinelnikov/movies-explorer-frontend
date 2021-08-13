@@ -15,18 +15,19 @@ function Login(props) {
     setLoginError('');
     if (isValid) {
       api.signin(values.email, values.password)
-        .then(res => {
-          props.setСurrentUser({
-            'isLoggedIn': true,
-            '_id': res._id,
-            'name': res.name,
-            'email': res.email
-          });
-          resetForm();
-          history.push('/movies')
+        .then((data) => {
+          if (data.jwt) {
+              props.setСurrentUser({
+                'isLoggedIn': true,
+                '_id': data._id,
+                'name': data.name,
+                'email': data.email
+              });
+              resetForm();
+              history.push('/movies');
+          }
         })
         .catch(err => {
-          console.log(err);
           setLoginError(err.message || err.status + ' ' + err.statusText)
         })
     }

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import Header from '../Header/Header';
 import Navigation from '../Navigation/Navigation'
@@ -6,46 +7,33 @@ import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
 import moviesApi from '../../utils/MoviesApi';
+import mainApi from '../../utils/MainApi';
 import { shortieDuration } from '../../utils/constants';
 import NavigationContext from '../../contexts/NavigationContext';
 
 function Movies() {
   const { navShown, setNavShown } = React.useContext(NavigationContext);
-  React.useEffect(() => {
-    setNavShown(false)
-  }, []);
+  React.useEffect(() => { setNavShown(false) }, []);
 
   const [showPreloader, setShowPreloader] = React.useState(false); // прелоадер
   const [movies, setMovies] = React.useState([]); // фильмы
+  const [likedMovies, setLikedMovies] = React.useState([]); // лайкнутые фильмы
 
   // ПОИСК
   // Валидация поисковой строки
   const [searchValidationState, setSearchValidationState] = React.useState({
     validation: false,
     isValid: false,
-    isDisabled: false,
     showError: false
   });
-  function chechSearchValidity(string) {
-    if (string.length > 0) {
-      setSearchValidationState(prev => ({...prev,
-        isValid: true,
-        isDisabled: false
-      }))
-    }
-    else {
-      setSearchValidationState(prev => ({...prev,
-        isValid: false,
-        isDisabled: true
-      }))
-    }
-  }
 
   // Обновляем значение поисковой строки
   const [searchString, setSearchString] = React.useState('');
   function handleSearchChange(evt) {
     setSearchString(evt.target.value)
-    chechSearchValidity(evt.target.value)
+    setSearchValidationState(prev => ({...prev,
+      isValid: evt.target.validity.valid
+    }))
   }
 
   // Загрузка фильмов из localStorage
@@ -58,24 +46,27 @@ function Movies() {
 
   // Обработчик поиска
   function handleSearch(evt) {
-    if (evt) { evt.preventDefault() }
+    evt.preventDefault();
     setSearchValidationState(prev => ({...prev,
       showError: false, // сброс ошибок
       validation: true // запуск валидации при первом поиске
     }));
-    chechSearchValidity(searchString);
     if (searchValidationState.isValid) {
       setShowPreloader(true);
       setcurrentPage(1) // сбрасываем результаты на первую страницу
       setMovies([]); // сбрасываем текущие фильмы
       moviesApi.getMovies()
-        .then((movies) => {
+        .then((movies) => { // поиск по всем фильмам
           const regexp = new RegExp(searchString, 'i');
-          return movies.filter(movie => regexp.test(movie.nameRU))
+          setMovies(movies.filter(movie => regexp.test(movie.nameRU)))
+          const jwt = localStorage.getItem('jwt');
+          return mainApi.getLikedMovies(jwt)
         })
-        .then((movies) => {
-          setMovies(movies);
-          localStorage.setItem('lastMovies', JSON.stringify(movies));
+        .then((likedMovies) => { // простановка лайков в найденных фильмах
+          likedMovies.forEach(likedMovie => {
+            setLikedMovies(prev => ([...prev, movies.find(m => m.id === likedMovie.id)]) )
+          })
+          // localStorage.setItem('lastMovies', JSON.stringify(movies));
           setShowPreloader(false);
         })
         .catch(err => setSearchValidationState(prev => ({...prev,
@@ -114,6 +105,21 @@ function Movies() {
     return filteredMovies.slice(0, moviesCount * currentPage)
   }
 
+  // Лайк фильма
+  function likeMovie(id) {
+    const jwt = localStorage.getItem('jwt');
+    if (likedMovies.find(m => m.id === id)) {
+      mainApi.dislikeMovie(jwt, likedMovies.find(m => m.id === id))
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
+    }
+    else {
+      mainApi.likeMovie(jwt, movies.find(m => m.id === id))
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
+    }
+  }
+
   return (
     <>
       <Header />
@@ -132,7 +138,7 @@ function Movies() {
         { searchValidationState.validation && !showPreloader && filteredMovies().length === 0 && !searchValidationState.showError ? ( <p className='movies__no-results'>Ничего не найдено</p> ) : ( <></> ) }
         { searchValidationState.showError ? ( <p className='movies__no-results'>Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз</p> ) : ( <></> ) }
 
-        <MoviesCardList filteredMovies={filteredMovies} page={'Movies'} />
+        <MoviesCardList likeMovie={likeMovie} filteredMovies={filteredMovies} page={'Movies'} />
 
         <div className='movies__loader'>
           { (( isShort ? movies.filter(movie => movie.duration < shortieDuration ).length : movies.length ) > (currentPage * moviesCount)) ? ( <input type='button' value='Еще' onClick={loadMovies} className='movies__loader-button'/> ) : ( <></> ) }

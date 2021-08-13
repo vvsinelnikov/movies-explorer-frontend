@@ -5,15 +5,13 @@ import SearchForm from '../SearchForm/SearchForm';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
 import Footer from '../Footer/Footer';
-import MainApi from '../../utils/MainApi';
+import mainApi from '../../utils/MainApi';
 import { shortieDuration } from '../../utils/constants';
 import NavigationContext from '../../contexts/NavigationContext';
 
 function SavedMovies() {
   const { navShown, setNavShown } = React.useContext(NavigationContext);
-  React.useEffect(() => {
-    setNavShown(false)
-  }, []);
+  React.useEffect(() => { setNavShown(false) }, []);
 
   const [myMovies, setMyMovies] = React.useState([]); // фильмы
   const [showPreloader, setShowPreloader] = React.useState(false); // прелоадер
@@ -22,10 +20,8 @@ function SavedMovies() {
   React.useEffect(() => {
     setShowPreloader(true);
     setMyMovies([]); // сбрасываем текущие фильмы
-    MainApi.getMovies()
-      .then((movies) => {
-        const myIDs = [5, 6]
-        return movies.filter(movie => myIDs.includes(movie.id)) })
+    const jwt = localStorage.getItem('jwt');
+    mainApi.getLikedMovies(jwt)
       .then((movies) => {
         setMyMovies(movies);
         setShowPreloader(false);
@@ -41,43 +37,28 @@ function SavedMovies() {
   const [searchValidationState, setSearchValidationState] = React.useState({
     validation: false,
     isValid: false,
-    isDisabled: false,
     showError: false
   });
-  function chechSearchValidity(string) {
-    if (string.length > 0) {
-      setSearchValidationState(prev => ({...prev,
-        isValid: true,
-        isDisabled: false
-      }))
-    }
-    else {
-      setSearchValidationState(prev => ({...prev,
-        isValid: false,
-        isDisabled: true
-      }))
-    }
-  }
 
   // Обновляем значение поисковой строки
   const [searchString, setSearchString] = React.useState('');
   function handleSearchChange(evt) {
     setSearchString(evt.target.value)
-    chechSearchValidity(evt.target.value)
+    setSearchValidationState(prev => ({...prev,
+      isValid: evt.target.validity.valid
+    }) )
   }
 
   // Обработчик поиска
   function handleSearch(evt) {
-    if (evt) { evt.preventDefault() }
+    evt.preventDefault();
     setSearchValidationState(prev => ({...prev,
       showError: false, // сброс ошибок
       validation: true // запуск валидации при первом поиске
     }));
-    chechSearchValidity(searchString);
     if (searchValidationState.isValid) {
       const regexp = new RegExp(searchString, 'i');
-      const mySearchedMovies = myMovies.filter(movie => regexp.test(movie.nameRU))
-      setMyMovies(mySearchedMovies);
+      setMyMovies(myMovies.filter(movie => regexp.test(movie.nameRU)));
     }
   }
 
@@ -91,6 +72,16 @@ function SavedMovies() {
   // Финальный вывод фильмов
   function filteredMovies() {
     return isShort ? myMovies.filter(movie => movie.duration < shortieDuration ) : myMovies;
+  }
+
+  // Лайк фильма
+  function likeMovie(id) {
+    const jwt = localStorage.getItem('jwt');
+    if (myMovies.find(m => m.id === id)) {
+      mainApi.dislikeMovie(jwt, myMovies.find(m => m.id === id))
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
+    }
   }
 
   return (
@@ -111,7 +102,7 @@ function SavedMovies() {
         { filteredMovies().length === 0 && !showPreloader ? ( <p className='movies__no-results'>Ничего не найдено</p> ) : ( <></> ) }
         { searchValidationState.showError ? ( <p className='movies__no-results'>Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз</p> ) : ( <></> ) }
 
-        <MoviesCardList filteredMovies={filteredMovies} page={'Movies'} />
+        <MoviesCardList likeMovie={likeMovie} filteredMovies={filteredMovies} page={'SavedMovies'} />
       </div>
       <Footer />
     </>

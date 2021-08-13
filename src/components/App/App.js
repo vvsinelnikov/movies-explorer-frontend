@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
@@ -16,41 +15,33 @@ import api from '../../utils/MainApi';
 function App() {
   const history = useHistory();
 
-  React.useEffect(() => {
-    document.title = "Bitfilms"
-  }, []);
+  React.useEffect(() => { document.title = "Bitfilms" }, []);
 
+  // Отображение бокового меню
+  const [navShown, setNavShown] = React.useState(false);
+
+  // Авторизация (валидация токена)
   const [currentUser, setСurrentUser] = React.useState({'isLoggedIn': false});
-  // React.useEffect(() => {
-  //   setСurrentUser({
-  //     'isLoggedIn': false,
-  //     '_id': 'TestId',
-  //     'name': 'TestName',
-  //     'email': 'TestEmail'
-  //   })
-  // }, []);
+  React.useEffect(() => { tokenCheck() }, []);
 
-  const [navShown, setNavShown] = React.useState(false); // Отображение бокового меню
-
-  React.useEffect(() => {
-    api.validateLogin()
-      .then(res => {
-        if (res._id) {
-          setСurrentUser({
-            'isLoggedIn': true,
-            '_id': res._id,
-            'name': res.name,
-            'email': res.email
-          })
-          console.log(res)
-          history.push('/movies');
-        }
-        else {console.log(res)}
-      })
-      // .catch(err => console.log(err.message || err.status + ' ' + err.statusText));
-      .catch(err => console.log(err));
-
-  }, []);
+  function tokenCheck () {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+      api.getMyProfile(jwt)
+        .then((res) => {
+          if (res) {
+            setСurrentUser({
+              'isLoggedIn': true,
+              '_id': res._id,
+              'name': res.name,
+              'email': res.email
+              });
+              history.push('/movies');
+          }
+        })
+        .catch(err => console.log(err))
+    }
+  }
 
   return (
     <div className='page'>
@@ -58,7 +49,7 @@ function App() {
         <NavigationContext.Provider value={{navShown, setNavShown}}>
           <Switch>
             <Route path='/' exact>
-              <Redirect to="/movies" />
+              { currentUser.isLoggedIn ? (<Redirect to='/main' />) : (<Redirect to='/movies' />) }
             </Route>
             <Route path='/main'>
               <Main />
@@ -71,18 +62,18 @@ function App() {
             </Route>
             <Route path='/signin'>
               {currentUser.isLoggedIn ?
-                (<Redirect to="/movies" />) :
+                (<Redirect to='/movies' />) :
                 (<Login setСurrentUser={setСurrentUser} />)
               }
             </Route>
-            <ProtectedRoute path='/profile' component={Profile} />
+            <ProtectedRoute path='/profile' component={Profile} setСurrentUser={setСurrentUser} />
             <ProtectedRoute path='/saved-movies' component={SavedMovies} />
             <ProtectedRoute path='/movies' component={Movies} />
             <Route path='/404'>
               <PageNotFound />
             </Route>
-            <Route path="*">
-              <Redirect to="/404" />
+            <Route path='*'>
+              <Redirect to='/404' />
             </Route>
           </Switch>
         </NavigationContext.Provider>

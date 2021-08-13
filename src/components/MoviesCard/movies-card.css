@@ -60,6 +60,15 @@
   opacity: 0.7;
 }
 
+.movies-card__button_liked {
+  background-image: url('../../images/MoviesCard/button-like_active.png');
+}
+
+.movies-card__button_liked:hover {
+  background-image: url('../../images/MoviesCard/button-remove.png');
+  opacity: 0.7;
+}
+
 .movies-card__duration {
   font-size: 11px;
   line-height: 13px;
