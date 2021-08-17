@@ -89,7 +89,6 @@ class Api {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
         'Authorization': `Bearer ${jwt}`,
       },
       body: JSON.stringify(movie)
