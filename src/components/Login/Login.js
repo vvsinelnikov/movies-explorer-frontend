@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import api from '../../utils/MainApi';

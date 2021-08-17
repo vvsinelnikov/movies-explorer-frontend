@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import Header from '../Header/Header';
 import Navigation from '../Navigation/Navigation'
@@ -13,17 +14,16 @@ function SavedMovies() {
   const { navShown, setNavShown } = React.useContext(NavigationContext);
   React.useEffect(() => { setNavShown(false) }, []);
 
-  const [myMovies, setMyMovies] = React.useState([]); // фильмы
-  const [showPreloader, setShowPreloader] = React.useState(false); // прелоадер
+  const [likedMovies, setlikedMovies] = React.useState([]); // фильмы
+  const [showPreloader, setShowPreloader] = React.useState(true); // прелоадер
 
-  // Предзагрузка моих фильмов
+  // Предзагрузка лайкнутых фильмов
   React.useEffect(() => {
-    setShowPreloader(true);
-    setMyMovies([]); // сбрасываем текущие фильмы
     const jwt = localStorage.getItem('jwt');
     mainApi.getLikedMovies(jwt)
       .then((movies) => {
-        setMyMovies(movies);
+        movies.forEach(movie => { movie.isLiked = true });
+        setlikedMovies(movies);
         setShowPreloader(false);
       })
       .catch(err => setSearchValidationState(prev => ({...prev,
@@ -58,7 +58,7 @@ function SavedMovies() {
     }));
     if (searchValidationState.isValid) {
       const regexp = new RegExp(searchString, 'i');
-      setMyMovies(myMovies.filter(movie => regexp.test(movie.nameRU)));
+      setlikedMovies(likedMovies.filter(movie => regexp.test(movie.nameRU)));
     }
   }
 
@@ -71,17 +71,19 @@ function SavedMovies() {
 
   // Финальный вывод фильмов
   function filteredMovies() {
-    return isShort ? myMovies.filter(movie => movie.duration < shortieDuration ) : myMovies;
+    return isShort ? likedMovies.filter(movie => movie.duration < shortieDuration ) : likedMovies;
   }
 
   // Лайк фильма
-  function likeMovie(id) {
+  function likeClick(movie) {
     const jwt = localStorage.getItem('jwt');
-    if (myMovies.find(m => m.id === id)) {
-      mainApi.dislikeMovie(jwt, myMovies.find(m => m.id === id))
-        .then(res => console.log(res))
-        .catch(err => console.log(err))
-    }
+    mainApi.dislikeMovie(jwt, movie)
+      .then(() => {
+        likedMovies.splice(likedMovies.indexOf(movie), 1)
+        setlikedMovies([])
+        setlikedMovies(likedMovies)
+      })
+      .catch(err => console.log(err))
   }
 
   return (
@@ -102,7 +104,7 @@ function SavedMovies() {
         { filteredMovies().length === 0 && !showPreloader ? ( <p className='movies__no-results'>Ничего не найдено</p> ) : ( <></> ) }
         { searchValidationState.showError ? ( <p className='movies__no-results'>Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз</p> ) : ( <></> ) }
 
-        <MoviesCardList likeMovie={likeMovie} filteredMovies={filteredMovies} page={'SavedMovies'} />
+        <MoviesCardList likeClick={likeClick} filteredMovies={filteredMovies} />
       </div>
       <Footer />
     </>

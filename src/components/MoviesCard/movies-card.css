@@ -41,7 +41,7 @@
 }
 
 .movies-card__button_remove:hover {
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 .movies-card__button_like {

@@ -17,7 +17,6 @@ function Movies() {
 
   const [showPreloader, setShowPreloader] = React.useState(false); // прелоадер
   const [movies, setMovies] = React.useState([]); // фильмы
-  const [likedMovies, setLikedMovies] = React.useState([]); // лайкнутые фильмы
 
   // ПОИСК
   // Валидация поисковой строки
@@ -55,18 +54,20 @@ function Movies() {
       setShowPreloader(true);
       setcurrentPage(1) // сбрасываем результаты на первую страницу
       setMovies([]); // сбрасываем текущие фильмы
+      let searchedMovies = []; // сбрасываем результат прошлого поиска
+      const jwt = localStorage.getItem('jwt');
       moviesApi.getMovies()
         .then((movies) => { // поиск по всем фильмам
           const regexp = new RegExp(searchString, 'i');
-          setMovies(movies.filter(movie => regexp.test(movie.nameRU)))
-          const jwt = localStorage.getItem('jwt');
+          searchedMovies = movies.filter(movie => regexp.test(movie.nameRU))
           return mainApi.getLikedMovies(jwt)
         })
-        .then((likedMovies) => { // простановка лайков в найденных фильмах
-          likedMovies.forEach(likedMovie => {
-            setLikedMovies(prev => ([...prev, movies.find(m => m.id === likedMovie.id)]) )
+        .then((liked) => { // простановка лайков в найденных фильмах
+          searchedMovies.forEach(movie => {
+            if (liked.find(m => m.id === movie.id)) { movie.isLiked = true }
           })
-          // localStorage.setItem('lastMovies', JSON.stringify(movies));
+          setMovies(searchedMovies) // конечный результат поиска
+          localStorage.setItem('lastMovies', JSON.stringify(searchedMovies));
           setShowPreloader(false);
         })
         .catch(err => setSearchValidationState(prev => ({...prev,
@@ -101,23 +102,20 @@ function Movies() {
 
   // Финальный вывод фильмов
   function filteredMovies() {
-    const filteredMovies = isShort ? movies.filter(movie => movie.duration < shortieDuration ) : movies;
-    return filteredMovies.slice(0, moviesCount * currentPage)
+    const filteredMovies = isShort ? movies.filter(movie => movie.duration < shortieDuration) : movies;
+    return filteredMovies.slice(0, moviesCount * currentPage) // постраничная выдача
   }
 
-  // Лайк фильма
-  function likeMovie(id) {
+  function likeClick(movie) {
     const jwt = localStorage.getItem('jwt');
-    if (likedMovies.find(m => m.id === id)) {
-      mainApi.dislikeMovie(jwt, likedMovies.find(m => m.id === id))
-        .then(res => console.log(res))
-        .catch(err => console.log(err))
-    }
-    else {
-      mainApi.likeMovie(jwt, movies.find(m => m.id === id))
-        .then(res => console.log(res))
-        .catch(err => console.log(err))
-    }
+    movie.isLiked ? mainApi.dislikeMovie(jwt, movie) : mainApi.likeMovie(jwt, movie)
+      .then(() => {
+        movie.isLiked = movie.isLiked ? false : true;
+        const updatedMovies = movies.map(m => m.id === movie.id ? movie : m);
+        setMovies(updatedMovies);
+        localStorage.setItem('lastMovies', JSON.stringify(updatedMovies));
+      })
+      .catch(err => console.log(err))
   }
 
   return (
@@ -138,7 +136,7 @@ function Movies() {
         { searchValidationState.validation && !showPreloader && filteredMovies().length === 0 && !searchValidationState.showError ? ( <p className='movies__no-results'>Ничего не найдено</p> ) : ( <></> ) }
         { searchValidationState.showError ? ( <p className='movies__no-results'>Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз</p> ) : ( <></> ) }
 
-        <MoviesCardList likeMovie={likeMovie} filteredMovies={filteredMovies} page={'Movies'} />
+        { filteredMovies().length > 0 ? (<MoviesCardList likeClick={likeClick} filteredMovies={filteredMovies} />) : ('') }
 
         <div className='movies__loader'>
           { (( isShort ? movies.filter(movie => movie.duration < shortieDuration ).length : movies.length ) > (currentPage * moviesCount)) ? ( <input type='button' value='Еще' onClick={loadMovies} className='movies__loader-button'/> ) : ( <></> ) }

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
@@ -26,8 +27,7 @@ function App() {
 
   function tokenCheck () {
     if (localStorage.getItem('jwt')) {
-      const jwt = localStorage.getItem('jwt');
-      api.getMyProfile(jwt)
+      api.getMyProfile(localStorage.getItem('jwt'))
         .then((res) => {
           if (res) {
             setСurrentUser({
@@ -36,7 +36,7 @@ function App() {
               'name': res.name,
               'email': res.email
               });
-              history.push('/movies');
+              // history.push('/movies');
           }
         })
         .catch(err => console.log(err))
