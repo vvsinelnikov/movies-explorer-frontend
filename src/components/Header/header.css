@@ -134,9 +134,6 @@
   .header {
     padding: 18px 70px;
   }
-  .header__menu-item-authorized {
-    visibility: hidden;
-  }
   .header__menu-item-account {
     display: initial;
   }
