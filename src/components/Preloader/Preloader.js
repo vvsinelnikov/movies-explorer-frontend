@@ -10,4 +10,5 @@ const Preloader = () => {
     )
 };
 
-export default Preloader
+export default React.memo(Preloader);
+

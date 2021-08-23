@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: center;
   margin-top: 30px;
-
 }
 
 .filter-checkbox__shortie input[type=checkbox] {
@@ -32,7 +31,6 @@
   background-image: url('../../images/SearchForm/switch-off.png');
   background-size: cover;
 }
-
 
 .filter-checkbox__shortie:focus-within span:before {
   border: solid 1px #3456F3;

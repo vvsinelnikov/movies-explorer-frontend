@@ -7,14 +7,19 @@ import Techs from '../Techs/Techs'
 import AboutMe from '../AboutMe/AboutMe'
 import Portfolio from '../Portfolio/Portfolio'
 import Navigation from '../Navigation/Navigation'
+import NavigationContext from '../../contexts/NavigationContext';
 
-function Main(props) {
+function Main() {
+  const { navShown, setNavShown } = React.useContext(NavigationContext);
+  React.useEffect(() => {
+    setNavShown(false)
+  }, []);
 
   return (
     <>
-      <Header toggleNav={props.toggleNav} isLoggedIn={props.isLoggedIn} />
+      <Header />
       <div className='main'>
-        { props.navShown ? ( <Navigation isLoggedIn={props.isLoggedIn} toggleNav={props.toggleNav}/> ) : ( <></> ) }
+        { navShown ? ( <Navigation /> ) : ( <></> ) }
         <Promo />
         <AboutProject />
         <Techs />

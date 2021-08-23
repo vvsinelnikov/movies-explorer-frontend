@@ -8,9 +8,9 @@ function Footer() {
         <p className='footer__copy'>&copy; 2021</p>
         <nav>
           <ul className='footer__menu-list'>
-            <li><a className='footer__menu-item' href='https://praktikum.yandex.ru'>Яндекс.Практикум</a></li>
-            <li><a className='footer__menu-item' href='https://github.com/vvsinelnikov'>Github</a></li>
-            <li><a className='footer__menu-item' href='https://www.facebook.com/sinelnikov.vv'>Facebook</a></li>
+            <li><a className='footer__menu-item' target='_blank' rel='noreferrer' href='https://praktikum.yandex.ru'>Яндекс.Практикум</a></li>
+            <li><a className='footer__menu-item' target='_blank' rel='noreferrer' href='https://github.com/vvsinelnikov'>Github</a></li>
+            <li><a className='footer__menu-item' target='_blank' rel='noreferrer' href='https://www.facebook.com/sinelnikov.vv'>Facebook</a></li>
           </ul>
         </nav>
       </div>
