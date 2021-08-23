@@ -14,8 +14,9 @@ function SavedMovies() {
   const { navShown, setNavShown } = React.useContext(NavigationContext);
   React.useEffect(() => { setNavShown(false) }, []);
 
-  const [likedMovies, setlikedMovies] = React.useState([]); // фильмы
   const [showPreloader, setShowPreloader] = React.useState(true); // прелоадер
+  const [likedMovies, setlikedMovies] = React.useState([]); // фильмы
+  const [searchedMovies, setSearchedMovies] = React.useState([]); // результат поиска по фильмам
 
   // Предзагрузка лайкнутых фильмов
   React.useEffect(() => {
@@ -24,6 +25,7 @@ function SavedMovies() {
       .then((movies) => {
         movies.forEach(movie => { movie.isLiked = true });
         setlikedMovies(movies);
+        setSearchedMovies(movies);
         setShowPreloader(false);
       })
       .catch(err => setSearchValidationState(prev => ({...prev,
@@ -58,7 +60,7 @@ function SavedMovies() {
     }));
     if (searchValidationState.isValid) {
       const regexp = new RegExp(searchString, 'i');
-      setlikedMovies(likedMovies.filter(movie => regexp.test(movie.nameRU)));
+      setSearchedMovies(likedMovies.filter(movie => regexp.test(movie.nameRU)));
     }
   }
 
@@ -71,7 +73,7 @@ function SavedMovies() {
 
   // Финальный вывод фильмов
   function filteredMovies() {
-    return isShort ? likedMovies.filter(movie => movie.duration < shortieDuration ) : likedMovies;
+    return isShort ? searchedMovies.filter(movie => movie.duration < shortieDuration ) : searchedMovies;
   }
 
   // Лайк фильма
@@ -82,6 +84,13 @@ function SavedMovies() {
         likedMovies.splice(likedMovies.indexOf(movie), 1)
         setlikedMovies([])
         setlikedMovies(likedMovies)
+
+        const lastMovies = JSON.parse(localStorage.getItem('lastMovies'))
+        lastMovies.forEach(m => {
+          if (m.id === movie.id) { m.isLiked = false }
+        });
+        localStorage.setItem('lastMovies', JSON.stringify(lastMovies));
+
       })
       .catch(err => console.log(err))
   }

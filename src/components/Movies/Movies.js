@@ -16,7 +16,8 @@ function Movies() {
   React.useEffect(() => { setNavShown(false) }, []);
 
   const [showPreloader, setShowPreloader] = React.useState(false); // прелоадер
-  const [movies, setMovies] = React.useState([]); // фильмы
+  const [allMovies, setAllMovies] = React.useState([]); // все фильмы
+  const [searchedMovies, setSearchedMovies] = React.useState([]); // результат поиска по фильмам
 
   // ПОИСК
   // Валидация поисковой строки
@@ -38,10 +39,43 @@ function Movies() {
   // Загрузка фильмов из localStorage
   React.useEffect(() => {
     if (JSON.parse(localStorage.getItem('lastMovies'))) {
-      setMovies(JSON.parse(localStorage.getItem('lastMovies')))
+      setSearchedMovies(JSON.parse(localStorage.getItem('lastMovies')))
     }
     }, []
   )
+
+  // Первичная загрузка всех фильмов
+  function getAllMovies() {
+    const jwt = localStorage.getItem('jwt');
+    let all = [];
+    setShowPreloader(true);
+    moviesApi.getMovies()
+      .then((movies) => { // загрузка всех фильмов
+        all = movies;
+        return mainApi.getLikedMovies(jwt); // запрос лайкнутых фильмов
+      })
+      .then((liked) => { // простановка лайков во всех фильмах
+        all.forEach(movie => {
+          if (liked.find(m => m.id === movie.id)) { movie.isLiked = true }
+        });
+        setAllMovies(all); // запись всех фильмов с лайками в стейт
+        serachAllMovies(all);
+        setShowPreloader(false);
+      })
+      .catch((err) => {
+        setShowPreloader(false);
+        setSearchValidationState(prev => ({...prev, showError: `${err}`}));
+      });
+  }
+
+  // Поиск в сохраненных фильмах
+  function serachAllMovies(movies) {
+    setcurrentPage(1) // сбрасываем результаты на первую страницу
+    const regexp = new RegExp(searchString, 'i');
+    const searchedMovies = movies.filter(movie => regexp.test(movie.nameRU))
+    setSearchedMovies(searchedMovies) // конечный результат поиска
+    localStorage.setItem('lastMovies', JSON.stringify(searchedMovies));
+  }
 
   // Обработчик поиска
   function handleSearch(evt) {
@@ -51,28 +85,7 @@ function Movies() {
       validation: true // запуск валидации при первом поиске
     }));
     if (searchValidationState.isValid) {
-      setShowPreloader(true);
-      setcurrentPage(1) // сбрасываем результаты на первую страницу
-      setMovies([]); // сбрасываем текущие фильмы
-      let searchedMovies = []; // сбрасываем результат прошлого поиска
-      const jwt = localStorage.getItem('jwt');
-      moviesApi.getMovies()
-        .then((movies) => { // поиск по всем фильмам
-          const regexp = new RegExp(searchString, 'i');
-          searchedMovies = movies.filter(movie => regexp.test(movie.nameRU))
-          return mainApi.getLikedMovies(jwt)
-        })
-        .then((liked) => { // простановка лайков в найденных фильмах
-          searchedMovies.forEach(movie => {
-            if (liked.find(m => m.id === movie.id)) { movie.isLiked = true }
-          })
-          setMovies(searchedMovies) // конечный результат поиска
-          localStorage.setItem('lastMovies', JSON.stringify(searchedMovies));
-          setShowPreloader(false);
-        })
-        .catch(err => setSearchValidationState(prev => ({...prev,
-          showError: `${err}`}
-        )));
+      allMovies.length === 0 ? getAllMovies() : serachAllMovies(allMovies)
     }
   }
 
@@ -80,16 +93,25 @@ function Movies() {
   const [moviesCount, setМoviesCount] = React.useState(Number);
   const [currentPage, setcurrentPage] = React.useState(1);
   React.useEffect(() => {
+    window.addEventListener('resize', () => { setTimeout(updateSize, 1000) });
     updateSize()
     }, []
   )
   function updateSize() {
     const pageWidth = document.documentElement.scrollWidth
-    if (pageWidth < 480) { setМoviesCount(5) }
-    if (pageWidth >= 480 && pageWidth < 768) { setМoviesCount(16) }
-    if (pageWidth >= 768) { setМoviesCount(36) }
+    if (pageWidth < 480) {
+      setМoviesCount(1);
+      setcurrentPage(5);
+    }
+    if (pageWidth >= 480 && pageWidth < 768) {
+      setМoviesCount(2);
+      setcurrentPage(4)
+    }
+    if (pageWidth >= 768) {
+      setМoviesCount(3);
+      setcurrentPage(4);
+    }
   }
-  window.addEventListener('resize', () => { setTimeout(updateSize, 1000) });
 
   function loadMovies() { setcurrentPage(currentPage + 1) } // постраничная подгрузка
 
@@ -102,20 +124,33 @@ function Movies() {
 
   // Финальный вывод фильмов
   function filteredMovies() {
-    const filteredMovies = isShort ? movies.filter(movie => movie.duration < shortieDuration) : movies;
+    const filteredMovies = isShort ? searchedMovies.filter(movie => movie.duration < shortieDuration) : searchedMovies;
     return filteredMovies.slice(0, moviesCount * currentPage) // постраничная выдача
   }
 
   function likeClick(movie) {
     const jwt = localStorage.getItem('jwt');
-    movie.isLiked ? mainApi.dislikeMovie(jwt, movie) : mainApi.likeMovie(jwt, movie)
-      .then(() => {
-        movie.isLiked = movie.isLiked ? false : true;
-        const updatedMovies = movies.map(m => m.id === movie.id ? movie : m);
-        setMovies(updatedMovies);
-        localStorage.setItem('lastMovies', JSON.stringify(updatedMovies));
-      })
-      .catch(err => console.log(err))
+    console.log(movie.isLiked)
+    if (movie.isLiked) {
+      mainApi.dislikeMovie(jwt, movie)
+        .then(() => {
+          movie.isLiked = undefined;
+          const updatedMovies = searchedMovies.map(m => m.id === movie.id ? movie : m);
+          setSearchedMovies(updatedMovies);
+          localStorage.setItem('lastMovies', JSON.stringify(updatedMovies));
+        })
+        .catch(err => console.log(err))
+    }
+    else {
+      mainApi.likeMovie(jwt, movie)
+        .then(() => {
+          movie.isLiked = true;
+          const updatedMovies = searchedMovies.map(m => m.id === movie.id ? movie : m);
+          setSearchedMovies(updatedMovies);
+          localStorage.setItem('lastMovies', JSON.stringify(updatedMovies));
+        })
+        .catch(err => console.log(err))
+    }
   }
 
   return (
@@ -139,7 +174,7 @@ function Movies() {
         { filteredMovies().length > 0 ? (<MoviesCardList likeClick={likeClick} filteredMovies={filteredMovies} />) : ('') }
 
         <div className='movies__loader'>
-          { (( isShort ? movies.filter(movie => movie.duration < shortieDuration ).length : movies.length ) > (currentPage * moviesCount)) ? ( <input type='button' value='Еще' onClick={loadMovies} className='movies__loader-button'/> ) : ( <></> ) }
+          { (( isShort ? searchedMovies.filter(movie => movie.duration < shortieDuration ).length : searchedMovies.length ) > (currentPage * moviesCount)) ? ( <input type='button' value='Еще' onClick={loadMovies} className='movies__loader-button'/> ) : ( <></> ) }
         </div>
 
       </div>

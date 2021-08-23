@@ -23,14 +23,13 @@ function App() {
 
   // Авторизация (валидация токена)
   const [currentUser, setСurrentUser] = React.useState({'isLoggedIn': false});
-  React.useEffect(() => { tokenCheck() }, []);
-
-  function tokenCheck () {
+  React.useEffect(() => {
     if (localStorage.getItem('jwt')) {
       api.getMyProfile(localStorage.getItem('jwt'))
         .then((res) => {
           if (res) {
             setСurrentUser({
+              'checked': 'yes',
               'isLoggedIn': true,
               '_id': res._id,
               'name': res.name,
@@ -41,7 +40,8 @@ function App() {
         })
         .catch(err => console.log(err))
     }
-  }
+    else { setСurrentUser({'checked': 'no'}); }
+  }, []);
 
   return (
     <div className='page'>
